@@ -2,8 +2,8 @@ indexing
 	description:
 		"Eiffel Vision application. Mswindows implementation."
 	status: "See notice at end of class"
-	date: "$Date: 2004/05/17 14:44:34 $"
-	revision: "$Revision: 1.1 $"
+	date: "$Date: 2004/05/17 14:55:11 $"
+	revision: "$Revision: 1.2 $"
 
 class
 	EV_APPLICATION_IMP
