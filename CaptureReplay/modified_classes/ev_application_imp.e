@@ -2,13 +2,14 @@ indexing
 	description:
 		"Eiffel Vision application. Mswindows implementation."
 	status: "See notice at end of class"
-	date: "$Date: 2004/05/17 14:55:11 $"
-	revision: "$Revision: 1.2 $"
+	date: "$Date: 2004/05/25 09:29:53 $"
+	revision: "$Revision: 1.3 $"
 
 class
 	EV_APPLICATION_IMP
 	
 inherit
+
 	EV_APPLICATION_I
 
  	WEL_APPLICATION
@@ -194,7 +195,7 @@ io.putstring ("ENTRER DANS PROCESS EVENT de EV_APPLICATION_IMP%N")
 							process_message (msg_nouser) -- CAPTURE-ADDON
 						else -- CAPTURE-ADDON
 							set_with_next_captured_event (msg)	-- CAPTURE-ADDON
-							temporize_if_needed -- CAPTURE-ADDON
+							--temporize_if_needed -- CAPTURE-ADDON
 						end -- CAPTURE-ADDON
 					    msg_nouser.peek_all	-- CAPTURE-ADDON				
 					end -- CAPTURE-ADDON
@@ -502,7 +503,9 @@ feature {NONE} -- Implementation
 			--| Redefined to add accelerator functionality.
 		local
 			msg: WEL_MSG
+der_msg : Boolean 
 		do
+der_msg := false
 			from
 				create msg.make
 			until
@@ -511,11 +514,18 @@ feature {NONE} -- Implementation
 				-- set_current_event (msg)
 				if replay and then not is_last_captured then -- CAPTURE ADDON
 					set_with_next_captured_event (msg)		-- CAPTURE ADDON
-					temporize_if_needed -- CAPTURE ADDON
+					--temporize_if_needed -- CAPTURE ADDON
+				elseif replay and then is_last_captured and then not der_msg then
+io.putstring ("Plus d'événement à rejouer%N")
+der_msg := true
+
 					
 				else  -- CAPTURE ADDON
 --if replay and then is_last_captured then
 --	io.putstring ("plus d'événement a rejouer")
+--end
+--if is_replay and then der_msg then
+--io.putstring ("On va faire un peek_all%N")
 --end
 					msg.peek_all -- CAPTURE ADDON
 					if is_capture then -- CAPTURE ADDON
