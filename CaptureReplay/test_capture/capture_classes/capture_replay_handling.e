@@ -1,8 +1,8 @@
 indexing
 	description: "Objects that ..."
 	author: ""
-	date: "$Date: 2004/05/25 12:33:27 $"
-	revision: "$Revision: 1.3 $"
+	date: "$Date: 2004/05/27 16:10:44 $"
+	revision: "$Revision: 1.4 $"
 
 class
 	CAPTURE_REPLAY_HANDLING
@@ -14,7 +14,7 @@ inherit
 create
 	init_capture_replay 
 
-feature {WEL_APPLICATION} -- capture/replay basic operations
+feature {WEL_APPLICATION, CAPTURE_REPLAY} -- capture/replay basic operations
 	
 	temporize_if_needed is
 			-- wait a little bit for some events
@@ -80,6 +80,10 @@ feature {WEL_APPLICATION} -- capture/replay basic operations
 
 				end
 			else
+--if e.message = wm_timer then
+--	io.putstring ("%Nmessage not capture TIMER, lparm = ")
+--	io.putint (e.lparam)
+--end
 				debug ("CAPTURE_TRACE") 
 					display_not_captured (e, trace_file)
 				end
@@ -89,6 +93,60 @@ feature {WEL_APPLICATION} -- capture/replay basic operations
 			end
 		end
 		
+
+
+
+
+	capture_event_msg (hwnd: POINTER; msg, wparam, lparam: INTEGER) is
+		-- add an event to repository of event if reccordable
+		require
+			-- trace_file /= void and trace_file.is_open_write
+			is_capture and not is_replay
+		local
+			tmp1: WEL_WINDOW
+			tmp2: CAPTURE_REPLAY_INFO
+			time_tmp : INTEGER 
+		do
+			if is_candidate_msg (msg) then
+				tmp1 := widget_by_pointer (hwnd)
+				if tmp1 /= void then
+					time_tmp :=ccapture_get_time_courant - time_lancement.item 
+			    	create tmp2.make_internal (tmp1, msg, wparam, lparam, time_tmp)
+		    	end
+				if tmp2 = void then
+					debug ("CAPTURE_TRACE") 
+			  			display_info_not_created_msg (hwnd, msg, wparam, lparam, trace_file)
+			  		end
+					debug ("CAPTURE_STDOUT") 
+			  			display_info_not_created_msg (hwnd, msg, wparam, lparam, io.output)
+			  		end
+				else
+			  		repository.extend (tmp2)
+					debug ("CAPTURE_TRACE") 
+				   		trace_info (tmp2)
+			  		end
+					debug ("CAPTURE_STDOUT") 
+				   		display_info (tmp2)
+			  		end
+
+				end
+			else
+--if e.message = wm_timer then
+--	io.putstring ("%Nmessage not capture TIMER, lparm = ")
+--	io.putint (e.lparam)
+--end
+				debug ("CAPTURE_TRACE") 
+					display_not_captured_msg (hwnd, msg, wparam, lparam, trace_file)
+				end
+				debug ("CAPTURE_STDOUT") 
+			  		display_not_captured_msg (hwnd, msg, wparam, lparam, io.output)
+			  	end
+			end
+		end
+
+
+
+
 	is_last_captured : BOOLEAN is
 			-- is last captured event ?
 		do
@@ -220,13 +278,20 @@ io.putstring ("%N")
 				trace_file.is_open_write
 			end	
 
-feature {NONE} -- conversion of event informations to/from persistent format
+feature {WEL_DISPATCHER} -- conversion of event informations to/from persistent format
 		
 		is_candidate (e: WEL_MSG) : BOOLEAN is
 			-- filter messages
 		do
+			Result := is_candidate_msg (e.message)
+		end
+		
+		
+		is_candidate_msg (e: INTEGER) : BOOLEAN is
+			-- filter messages
+		do
 			inspect
-				e.message
+				e
 			when Wm_char, Wm_syschar, Wm_keydown,
 			     Wm_keyup, Wm_syskeydown, Wm_syskeyup
 			     then
@@ -268,7 +333,6 @@ feature {NONE} -- conversion of event informations to/from persistent format
 				Result := false	
 			end
 		end
-		
 		
 			
 

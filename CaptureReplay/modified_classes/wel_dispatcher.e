@@ -1,14 +1,15 @@
 indexing
 	description: "Receives and dispatch the Windows messages to the Eiffel objects."
 	status: "See notice at end of class."
-	date: "$Date: 2004/05/25 12:33:37 $"
-	revision: "$Revision: 1.4 $"
+	date: "$Date: 2004/05/27 16:11:02 $"
+	revision: "$Revision: 1.5 $"
 
 class
 	WEL_DISPATCHER
 
 inherit
-	CAPTURE_REPLAY_SHARED_INFO -- CAPTURE-ADDON
+	--CAPTURE_REPLAY_SHARED_INFO -- CAPTURE-ADDON
+	CAPTURE_REPLAY_HANDLING
 	
 	WEL_WINDOW_MANAGER
 		export
@@ -53,6 +54,7 @@ feature {NONE} -- Implementation
 			returned_value: INTEGER
 			has_return_value: BOOLEAN
 		do
+--io.putstring ("%NEntrer dans window procédure%N")
 			window := window_of_item (hwnd)
 			if window /= Void then
 				if window.exists then
@@ -97,6 +99,16 @@ feature {NONE} -- Implementation
 			window: WEL_WINDOW
 			last_result: INTEGER
 		do
+if is_candidate_msg (msg) then
+io.putstring ("%NEntrer dans dialogue procédure")
+io.putstring ("message pouvant etre capturé : ")
+io.putint (msg)
+--else 
+--io.putstring ("%NEntrer dans dialogue procédure")
+--	io.putstring ("%NMessage = ")
+--	io.putint (msg)
+--	io.putstring ("%N")
+end
 			debug ("dlg_dispatcher")
 				io.put_string ("in dlg_proc ")
 				io.put_string (hwnd.out)

@@ -1,8 +1,8 @@
 indexing
 	description: "Objects that ..."
 	author: ""
-	date: "$Date: 2004/05/25 09:29:45 $"
-	revision: "$Revision: 1.2 $"
+	date: "$Date: 2004/05/27 16:10:48 $"
+	revision: "$Revision: 1.3 $"
 
 class
 	CAPTURE_REPLAY_SHARED_INFO	
@@ -19,7 +19,7 @@ feature {WEL_WINDOW}
 				reg_windows.extend (a)
 			end
 
-feature {EV_ANY, WEL_APPLICATION}
+feature {EV_ANY, WEL_APPLICATION, CAPTURE_REPLAY}
 
 	set_is_delegated_to_windows is
 			-- set 'is_delegated_to_windows'
@@ -55,18 +55,25 @@ feature {NONE} -- implementation
 
 	capture: BOOLEAN_REF is
 		-- is capture mode ?
+		indexing
+			once_status: global
+
 		once
 			create result
 		end
 	
 	replay: BOOLEAN_REF is
 			-- is replay mode ?
+		indexing
+			once_status: global
 		once
 			create result	
 		end		
 		
 	delegated_to_windows: BOOLEAN_REF is
 			-- is replay mode ?
+		indexing
+			once_status: global
 		once
 			create result	
 		end		
@@ -227,24 +234,40 @@ feature {NONE} -- display of trace on io or dedicated file
 		
 	display_not_captured (e: WEL_MSG; f: like trace_file) is
 		-- display 'not captured'
+		do
+			display_not_captured_msg (e.hwnd, e.message, e.lparam, e.wparam, trace_file)
+		end
+
+	display_not_captured_msg (hwnd: POINTER; msg, wparam, lparam: INTEGER; f: like trace_file) is
+		-- display 'not captured'
 		require
 			f /= void and then f.is_open_write
 		do
 			f.putstring(" Message not captured ");
-		   	f.putint (e.message);
+		   	f.putint (msg);
 			f.put_new_line	
 		end
 
+
 	display_info_not_created (e: WEL_MSG; f: like trace_file) is
+		-- display 'not captured'
+		do
+			display_info_not_created_msg (e.hwnd, e.message, e.lparam, e.wparam, trace_file)
+		end
+		
+
+	display_info_not_created_msg (hwnd: POINTER; msg, wparam, lparam: INTEGER; f: like trace_file) is
 		-- display 'not captured'
 		require
 			f /= void and then f.is_open_write
 		do
 			f.putstring(" Capture/replay info not created ");
-			f.putint (e.message);
+			f.putint (msg);
 			f.put_new_line
 		end
-		
+
+
+
 	display_info_on_file (info : CAPTURE_REPLAY_INFO ; f: like trace_file) is
 		-- display captured info
 		require
@@ -300,21 +323,28 @@ feature {NONE} -- display of trace on io or dedicated file
 				reg_windows.go_i_th (i)
 			end	
 		
-feature {NONE} -- Implementation
+feature {CAPTURE_REPLAY} -- Implementation
 	
 	reg_windows : LINKED_LIST [WEL_WINDOW] is
 			-- contains all the registered WEL_WINDOW
+		indexing
+			once_status: global
 			once
 				create result.make
 			end
 		
 	unique_number : INTEGER_REF is
 			-- contain the order number associated to last created WEL_WINDOW
+		indexing
+			once_status: global
 		once
 			create Result
 		end
 		
 	repository : LINKED_LIST [CAPTURE_REPLAY_INFO] is
+		indexing
+			once_status: global
+
 			-- contains all informations to memorize for replay
 			once
 				create Result.make
@@ -331,11 +361,14 @@ feature {NONE} -- Implementation
 			end
 			
 	time_lancement : INTEGER_REF	is
-	once
-		create Result
-	end
+		indexing
+			once_status: global
+
+		once
+			create Result
+		end
 		
-feature {NONE}
+feature {CAPTURE_REPLAY}
 
 	tools : WEL_WINDOWS_ROUTINES is
 			-- tools

@@ -2,8 +2,8 @@ indexing
 	description:
 		"Eiffel Vision application. Mswindows implementation."
 	status: "See notice at end of class"
-	date: "$Date: 2004/05/25 12:33:37 $"
-	revision: "$Revision: 1.4 $"
+	date: "$Date: 2004/05/27 16:11:02 $"
+	revision: "$Revision: 1.5 $"
 
 class
 	EV_APPLICATION_IMP
@@ -120,14 +120,24 @@ io.putstring ("%N")
 			if post_launch_actions_internal /= Void then
 				post_launch_actions_internal.call (Void)
 			end
-			--Lancement du thread de rejoue si neccessaire CAPTURE ADDON
-			if is_replay
-			then
-				create thread_rejoue.make_reply_thread (current) -- création du thread
-				thread_rejoue.launch -- lancement du thread
-			end
-			-- Fin lancement CAPTURE ADDON
+			--Lancement du thread de rejoue si neccessaire CAPTURE-ADDON
+--			if is_replay
+--			then
+--				create thread_rejoue.make_reply_thread (current) -- création du thread
+--Affiche le nombre d'element dans repository
+--io.putstring ("%Nnombre d'element (repository  pere : ")
+--io.put_integer (repository.count)
+--io.putstring ("%Nnombre d'element (reg_windows  pere : ")
+--io.put_integer (reg_windows.count)
+
+--				thread_rejoue.launch -- lancement du thread
+--			end
+			-- Fin lancement CAPTURE-ADDON
 			message_loop
+            --Terminaison du thread
+--			if is_replay then --CAPTURE-ADDON
+--				thread_rejoue.join_all --CAPTURE-ADDON
+--			end
 		end
 
 feature -- Access
@@ -517,9 +527,9 @@ feature {NONE} -- Implementation
 			--| Redefined to add accelerator functionality.
 		local
 			msg: WEL_MSG
-der_msg : Boolean 
+--der_msg : Boolean 
 		do
-der_msg := false
+--der_msg := false
 			from
 				create msg.make
 			until
@@ -529,9 +539,9 @@ der_msg := false
 				if replay and then not is_last_captured then -- CAPTURE ADDON
 					set_with_next_captured_event (msg)		-- CAPTURE ADDON
 					--temporize_if_needed -- CAPTURE ADDON
-				elseif replay and then is_last_captured and then not der_msg then
-io.putstring ("Plus d'événement à rejouer%N")
-der_msg := true
+--				elseif replay and then is_last_captured and then not der_msg then
+--io.putstring ("Plus d'événement à rejouer%N")
+--der_msg := true
 
 					
 				else  -- CAPTURE ADDON
@@ -593,6 +603,8 @@ der_msg := true
 			-- Has a Wm_quit message been processed?
 			-- Or has destroy been called?
 
+
+feature {CAPTURE_REPLAY} -- CAPTURE ADDON ajouté pour rendre accessible la fonction a partir de REPLAY_THREAD
 	process_message (msg: WEL_MSG) is
 			-- Dispatch `msg'.
 			--| Different from WEL because of accelerators.
@@ -644,12 +656,15 @@ der_msg := true
 				end
 			end
 		end
-		
+	
+	
+feature {NONE}	-- CAPTURE-ADDON
 	process_events_until_stopped is
 			-- Process all events until 'stop_processing' is called.
 		local
 			msg: WEL_MSG
 		do
+io.putstring ("%NENTRER DANS PROCESS_EVENT_UNTIL_STOPPED%N")
 			from
 				create msg.make
 				msg.peek_all
