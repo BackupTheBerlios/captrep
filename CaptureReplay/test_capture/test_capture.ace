@@ -60,7 +60,7 @@ cluster
 
 	capture_classes:		"capture_classes"
 
-	thread:			"$ISE_EIFFEL/library/thread"
+	all thread:			"$ISE_EIFFEL/library/thread"
 
 external
 

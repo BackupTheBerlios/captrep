@@ -1,8 +1,8 @@
 indexing
 	description: "Receives and dispatch the Windows messages to the Eiffel objects."
 	status: "See notice at end of class."
-	date: "$Date: 2004/05/25 09:30:01 $"
-	revision: "$Revision: 1.3 $"
+	date: "$Date: 2004/05/25 12:33:37 $"
+	revision: "$Revision: 1.4 $"
 
 class
 	WEL_DISPATCHER

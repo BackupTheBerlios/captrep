@@ -2,8 +2,8 @@ indexing
 	description: "General notions of a Windows application. All WEL %
 		%applications must define its own descendant of WEL_APPLICATION."
 	status: "See notice at end of class."
-	date: "$Date: 2004/05/25 09:29:57 $"
-	revision: "$Revision: 1.3 $"
+	date: "$Date: 2004/05/25 12:33:37 $"
+	revision: "$Revision: 1.4 $"
 
 deferred class
 	WEL_APPLICATION

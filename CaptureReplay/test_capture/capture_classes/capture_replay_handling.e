@@ -1,8 +1,8 @@
 indexing
 	description: "Objects that ..."
 	author: ""
-	date: "$Date: 2004/05/25 09:29:45 $"
-	revision: "$Revision: 1.2 $"
+	date: "$Date: 2004/05/25 12:33:27 $"
+	revision: "$Revision: 1.3 $"
 
 class
 	CAPTURE_REPLAY_HANDLING
@@ -26,8 +26,8 @@ feature {WEL_APPLICATION} -- capture/replay basic operations
 			do
 				-- should be refined according to type of event
 				time_msg := repository.item.time_replay
-				io.putstring ("%Ntime msg :")
-				io.put_integer (time_msg)
+--				io.putstring ("%Ntime msg :")
+--				io.put_integer (time_msg)
 				
 				time_courant := ccapture_get_time_courant - time_lancement.item
 --				io.putstring ("%Ntime courant :")
@@ -38,11 +38,11 @@ feature {WEL_APPLICATION} -- capture/replay basic operations
 				
 				if (time_courant - time_msg) < 0 then
 					--io.putstring ("%Natttente de ")
-					io.put_integer ((time_msg - time_courant) * 10) -- * 10 car on a des centieme de seconde a mettre en millieme de seconde
+--					io.put_integer ((time_msg - time_courant) * 10) -- * 10 car on a des centieme de seconde a mettre en millieme de seconde
 					
-	 				app_implementation.sleep(time_msg - time_courant)					
+	 				app_implementation.sleep((time_msg - time_courant) * 10)
 				end
-				io.putstring ("%N")					
+--				io.putstring ("%N")					
 			end
 		
 	capture_event (e: WEL_MSG) is
@@ -59,8 +59,7 @@ feature {WEL_APPLICATION} -- capture/replay basic operations
 			if is_candidate (e) then
 				tmp1 := widget_by_pointer (e.hwnd)
 				if tmp1 /= void then
---time_tmp := 2
-time_tmp :=ccapture_get_time_courant - time_lancement.item 
+					time_tmp :=ccapture_get_time_courant - time_lancement.item 
 			    	create tmp2.make (e, tmp1, time_tmp)
 		    	end
 				if tmp2 = void then

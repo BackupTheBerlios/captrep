@@ -2,8 +2,8 @@ indexing
 	description:
 		"Eiffel Vision application. Mswindows implementation."
 	status: "See notice at end of class"
-	date: "$Date: 2004/05/25 09:29:53 $"
-	revision: "$Revision: 1.3 $"
+	date: "$Date: 2004/05/25 12:33:37 $"
+	revision: "$Revision: 1.4 $"
 
 class
 	EV_APPLICATION_IMP
@@ -111,6 +111,7 @@ io.putstring ("%N")
 			--| The correct time.
 		local
 			d: WEL_MAIN_DIALOG
+			thread_rejoue: REPLAY_THREAD
 		do
 			d ?= application_main_window
 			if d /= Void then
@@ -119,6 +120,13 @@ io.putstring ("%N")
 			if post_launch_actions_internal /= Void then
 				post_launch_actions_internal.call (Void)
 			end
+			--Lancement du thread de rejoue si neccessaire CAPTURE ADDON
+			if is_replay
+			then
+				create thread_rejoue.make_reply_thread (current) -- création du thread
+				thread_rejoue.launch -- lancement du thread
+			end
+			-- Fin lancement CAPTURE ADDON
 			message_loop
 		end
 
@@ -490,6 +498,12 @@ feature {NONE} -- WEL Implemenation
 				Icc_date_classes | Icc_userex_classes | Icc_cool_classes)
 			create rich_edit_dll.make
 		end
+
+
+
+
+
+
 
 feature {NONE} -- Implementation
 
