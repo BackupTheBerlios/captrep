@@ -1,8 +1,8 @@
 indexing
 	description: "Abstract notions of a window."
 	status: "See notice at end of class."
-	date: "$Date: 2004/05/17 14:55:11 $"
-	revision: "$Revision: 1.2 $"
+	date: "$Date: 2004/05/25 09:30:12 $"
+	revision: "$Revision: 1.3 $"
 
 deferred class
 	WEL_WINDOW

@@ -1,8 +1,8 @@
 indexing
 	description: "Objects that ..."
 	author: ""
-	date: "$Date: 2004/05/17 14:45:46 $"
-	revision: "$Revision: 1.1 $"
+	date: "$Date: 2004/05/25 09:29:45 $"
+	revision: "$Revision: 1.2 $"
 
 class
 	CAPTURE_REPLAY_HANDLING
@@ -20,9 +20,29 @@ feature {WEL_APPLICATION} -- capture/replay basic operations
 			-- wait a little bit for some events
 			require
 				app_implementation /= void
+			local 
+				time_msg : INTEGER
+				time_courant : INTEGER
 			do
 				-- should be refined according to type of event
-				app_implementation.sleep(30)
+				time_msg := repository.item.time_replay
+				io.putstring ("%Ntime msg :")
+				io.put_integer (time_msg)
+				
+				time_courant := ccapture_get_time_courant - time_lancement.item
+--				io.putstring ("%Ntime courant :")
+--				io.put_integer (time_courant)
+--				io.putstring ("%Ndelai attente :")
+--				io.put_integer (time_msg - time_courant)
+
+				
+				if (time_courant - time_msg) < 0 then
+					--io.putstring ("%Natttente de ")
+					io.put_integer ((time_msg - time_courant) * 10) -- * 10 car on a des centieme de seconde a mettre en millieme de seconde
+					
+	 				app_implementation.sleep(time_msg - time_courant)					
+				end
+				io.putstring ("%N")					
 			end
 		
 	capture_event (e: WEL_MSG) is
@@ -34,11 +54,14 @@ feature {WEL_APPLICATION} -- capture/replay basic operations
 		local
 			tmp1: WEL_WINDOW
 			tmp2: CAPTURE_REPLAY_INFO
+			time_tmp : INTEGER 
 		do
 			if is_candidate (e) then
 				tmp1 := widget_by_pointer (e.hwnd)
 				if tmp1 /= void then
-			    	create tmp2.make (e, tmp1)
+--time_tmp := 2
+time_tmp :=ccapture_get_time_courant - time_lancement.item 
+			    	create tmp2.make (e, tmp1, time_tmp)
 		    	end
 				if tmp2 = void then
 					debug ("CAPTURE_TRACE") 
@@ -97,6 +120,7 @@ feature {WEL_APPLICATION} -- capture/replay basic operations
 			  		e.set_lparam(tmp1.lparam)
 			  		e.set_wparam(tmp1.wparam)
 			  		e.set_hwnd (tmp2.item)
+ 		temporize_if_needed
 
 					debug ("CAPTURE_TRACE") 
 				  		trace_file.putstring ("%N Found : Widget is found in memory as it should be %N")
@@ -143,8 +167,18 @@ feature {NONE} -- implementation
 			-- Initialize `Current'.
 		local
 			f: PLAIN_TEXT_FILE
+--tps : WEL_SYSTEM_TIME
 		do
 			app_implementation := app
+--create tps.make_by_current_time;
+--io.putstring ("Temps :")
+--io.put_integer (tps.milliseconds) 
+-- On mémorise le temps au début du lancement de l'application
+time_lancement.set_item (ccapture_get_time_courant)
+io.putstring ("%NTemps à moi :")
+io.put_integer (time_lancement.item) 
+io.putstring ("%N")
+
 			create f.make (name_of_event_db);
 			if f.exists then
 			  io.putstring("Replay is undergoing ....%N")
@@ -161,6 +195,7 @@ feature {NONE} -- implementation
 				capture.set_item (true)
 				create internal_repository.make
 				name_of_trace_file := "capture.txt"
+
 			ensure
 				is_capture and not is_replay
 				trace_file.is_open_write
@@ -173,6 +208,7 @@ feature {NONE} -- implementation
 				retrieve_captured_events
 				repository.start
 				name_of_trace_file := "replay.txt"
+
 --Affichage de nombre d'événements récupéré
 io.putstring ("Nombre evenement enregistré : ")
 io.put_integer (repository.count)
@@ -233,6 +269,9 @@ feature {NONE} -- conversion of event informations to/from persistent format
 				Result := false	
 			end
 		end
+		
+		
+			
 
 feature {CAPTURE_REPLAY}
 	
@@ -243,6 +282,18 @@ feature {CAPTURE_REPLAY}
 
 	name_of_event_db : STRING is "File_Of_Events"
 	-- name of file where events are stored
+
+	
+--feature {NONE} -- Externals
+--
+--
+--	c_sleep (v: INTEGER) is
+--			-- Sleep for `v' milliseconds.
+--		external
+--			"C [macro <windows.h>] (DWORD)"
+--		alias
+--			"Sleep"
+--		end
 
 invariant
 	invariant_clause: is_capture xor is_replay 

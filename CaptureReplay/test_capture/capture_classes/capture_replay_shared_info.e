@@ -1,8 +1,8 @@
 indexing
 	description: "Objects that ..."
 	author: ""
-	date: "$Date: 2004/05/17 14:46:00 $"
-	revision: "$Revision: 1.1 $"
+	date: "$Date: 2004/05/25 09:29:45 $"
+	revision: "$Revision: 1.2 $"
 
 class
 	CAPTURE_REPLAY_SHARED_INFO	
@@ -87,8 +87,11 @@ feature {EV_ANY}
 		-- capture events catched directly by windows
 		local
 			tmp: CAPTURE_REPLAY_INFO
+			time_tmp : INTEGER
 		do
-			create tmp.make_internal (w, m, wp, lp)
+time_tmp :=ccapture_get_time_courant - time_lancement.item 
+--time_tmp := 2
+			create tmp.make_internal (w, m, wp, lp, time_tmp)
 			repository.extend (tmp)
 			display_info (tmp)
 		end
@@ -262,6 +265,8 @@ feature {NONE} -- display of trace on io or dedicated file
 			f.putbool (info.last_boolean_result)
 			f.putstring ("%N dispatch_result : ")
 			f.putint (info.dispatch_result)
+			f.putstring ("%N temps écoulé depuis lancement : ")
+			f.putint (info.time_replay)
 			f.putstring (" %N ------------------------------------------------ %N");
 		end	
 
@@ -324,6 +329,11 @@ feature {NONE} -- Implementation
 			ensure
 				Result.is_open_write
 			end
+			
+	time_lancement : INTEGER_REF	is
+	once
+		create Result
+	end
 		
 feature {NONE}
 
@@ -335,6 +345,20 @@ feature {NONE}
 		
 	name_of_trace_file : STRING
 	-- name of file that will contain traces
+
+
+feature {NONE} -- external
+
+		ccapture_get_time_courant : INTEGER   is
+				-- Récupere le temps actuel
+			external
+				"C () : EIF_INTEGER| %"Capture.h%""
+			alias
+				"timeCourant"
+			end
+				
+
+
 	
 invariant
 	invariant_clause: True -- Your invariant here

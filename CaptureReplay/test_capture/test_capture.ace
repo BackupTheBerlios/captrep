@@ -10,7 +10,7 @@ default
 	assertion (ensure)
 	working_directory ("C:\MyProjects\JBuilder\CaptureReplay\test_capture")
 	disabled_debug (yes)
-	debug ("capture_stdout")
+	disabled_debug ("capture_stdout")
 	debug ("capture_trace")
 	disabled_debug ("dlg_dispatcher")
 	disabled_debug ("vision2_windows")
@@ -22,15 +22,15 @@ default
 	line_generation (no)
 	trace (no)
 	check_vape (yes)
-	console_application (no)
+	console_application (yes)
 	syntax_warning (no)
 	address_expression (no)
 	array_optimization (no)
 	dead_code_removal (yes)
 	dynamic_runtime (no)
-	exception_trace (no)
+	exception_trace (yes)
 	inlining (no)
-	multithreaded (no)
+	multithreaded (yes)
 
 
 -------------------------------------------------
@@ -60,16 +60,23 @@ cluster
 
 	capture_classes:		"capture_classes"
 
+	thread:			"$ISE_EIFFEL/library/thread"
+
 external
+
+	make:
+		"$(ISE_EIFFEL)\library\capture\objet\Makefile"
 
 	include_path:
 		"$(ISE_EIFFEL)\library\wel\spec\windows\include",
-		"$(ISE_EIFFEL)\library\vision2\spec\include"
+		"$(ISE_EIFFEL)\library\vision2\spec\include",
+		"$(ISE_EIFFEL)\library\capture\include"
 
 	object:
-		"$(ISE_EIFFEL)\library\wel\spec\$(ISE_C_COMPILER)\lib\wel.lib",
+		"$(ISE_EIFFEL)\library\wel\spec\$(ISE_C_COMPILER)\lib\mtwel.lib",
 		"$(ISE_EIFFEL)\library\vision2\spec\$(ISE_C_COMPILER)\lib\vision2.lib",
 		"$(ISE_EIFFEL)\library\vision2\spec\$(ISE_C_COMPILER)\lib\zlib.lib",
-		"$(ISE_EIFFEL)\library\vision2\spec\$(ISE_C_COMPILER)\lib\libpng.lib"
+		"$(ISE_EIFFEL)\library\vision2\spec\$(ISE_C_COMPILER)\lib\libpng.lib",
+		"$(ISE_EIFFEL)\library\capture\objet\Capture.obj"
 
 end

@@ -1,8 +1,8 @@
 	indexing
 		description: "Objects that ..."
 		author: ""
-		date: "$Date: 2004/05/17 14:45:50 $"
-		revision: "$Revision: 1.1 $"
+		date: "$Date: 2004/05/25 09:29:45 $"
+		revision: "$Revision: 1.2 $"
 	
 	class
 		CAPTURE_REPLAY_INFO
@@ -15,7 +15,7 @@
 		
 	feature
 		
-		make (e: WEL_MSG; w: WEL_WINDOW) is
+		make (e: WEL_MSG; w: WEL_WINDOW; tps : INTEGER) is
 				-- initialize infos
 				require
 					-- w.poi /= void
@@ -27,9 +27,10 @@
 					dispatch_result := e.dispatch_result
 					create target_identifier.make_with_window (w)
 					widget := w -- to be removed
+					time_replay := tps
 				end	
 				
-		make_internal (w: WEL_WINDOW; m: INTEGER; wp: INTEGER; lp: INTEGER) is
+		make_internal (w: WEL_WINDOW; m: INTEGER; wp: INTEGER; lp: INTEGER; tps : INTEGER) is
 			-- create infos using basic values
 				require
 					-- w.poi /= void
@@ -38,6 +39,7 @@
 				message := m
 				lparam := lp
 				wparam := wp
+				time_replay := tps
 			end
 	
 	feature {CAPTURE_REPLAY} -- handling of informations related to events
@@ -50,6 +52,7 @@
 		wparam : INTEGER
 		last_boolean_result : BOOLEAN
 		dispatch_result : INTEGER
+		time_replay : INTEGER -- le temps qu'il faut attendre avant de rejouer l'événement (temps décompté par raport au lancement de l'application).
 		
 		
 		set_target_identifier (n: like target_identifier) is

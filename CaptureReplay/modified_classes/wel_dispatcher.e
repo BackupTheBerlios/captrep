@@ -1,8 +1,8 @@
 indexing
 	description: "Receives and dispatch the Windows messages to the Eiffel objects."
 	status: "See notice at end of class."
-	date: "$Date: 2004/05/17 14:55:11 $"
-	revision: "$Revision: 1.2 $"
+	date: "$Date: 2004/05/25 09:30:01 $"
+	revision: "$Revision: 1.3 $"
 
 class
 	WEL_DISPATCHER
@@ -189,6 +189,16 @@ feature {NONE} -- Externals
 		external
 			"C [macro %"disptchr.h%"]"
 		end
+
+--	cwel_my_print is
+--		external
+--			"C [macro %"disptchr.h%"]"
+--		alias
+--			"myPrint"
+--		end
+
+
+
 
 	cwin_def_window_proc (hwnd: POINTER; msg, wparam,
 			lparam: INTEGER): INTEGER is

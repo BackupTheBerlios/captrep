@@ -2,8 +2,8 @@ indexing
 	description: "General notions of a Windows application. All WEL %
 		%applications must define its own descendant of WEL_APPLICATION."
 	status: "See notice at end of class."
-	date: "$Date: 2004/05/17 14:55:11 $"
-	revision: "$Revision: 1.2 $"
+	date: "$Date: 2004/05/25 09:29:57 $"
+	revision: "$Revision: 1.3 $"
 
 deferred class
 	WEL_APPLICATION
@@ -183,7 +183,7 @@ io.putstring ("ENTRER DANS MESSAGE_LOOP de WEL_APPLICATION%N")
 					-- set_current_event (msg)
 					if is_replay and then not is_last_captured then
 						set_with_next_captured_event (msg)
-						temporize_if_needed
+						--temporize_if_needed
 					else
 						msg.peek_all
 						if is_capture then
@@ -232,7 +232,7 @@ io.putstring ("On veut capturer un événement%N")
 					-- set_current_event (msg)
 					if is_replay and then not is_last_captured then
 						set_with_next_captured_event (msg)
-						temporize_if_needed
+						--temporize_if_needed
 					else
 						msg.peek_all
 						if is_capture then
